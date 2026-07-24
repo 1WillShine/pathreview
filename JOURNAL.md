@@ -17,3 +17,19 @@ The pathreview codebase has unit tests for individual RAG components but no inte
 
 **Is this right for me? — checklist reasoning:**
 This is a Tier 2 issue requiring cross-module understanding of the RAG pipeline. The scope is well-defined — one new test file, no changes to production code — which makes it more approachable than a Tier 2 feature addition. The mock LLM provider already exists, so I do not need to write mocking infrastructure from scratch. The estimated effort of 4-6 hours is realistic across the remaining weeks.
+
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** https://github.com/1WillShine/pathreview/commit/$(git rev-parse HEAD~1)
+
+**Reproduction summary:**
+Confirmed that `tests/integration/` contains only `__init__.py` — `test_rag_pipeline.py` does not exist. The gap is real: all five RAG components (`HybridRetriever`, `VectorStore`, `KeywordSearcher`, `ReviewGenerator`, `parse_review_output`) have unit tests but no test wires them together end-to-end. A bug at any composition boundary (e.g. score format mismatch between retriever output and generator's context formatter) would go undetected.
+
+**PLAN.md link:** https://github.com/1WillShine/pathreview/blob/test/38-rag-pipeline-integration-test/PLAN.md
+
+**Walkthrough video (recommended):** N/A
+
+**Blockers or open questions:**
+- Need to confirm whether `chromadb.EphemeralClient()` is available in the pinned version (>=0.29.0) or whether to use `chromadb.Client(Settings(is_persistent=False))` instead.
+- Need to verify the correct `unittest.mock.patch` path for `openai.OpenAI` as used inside `rag/generator/review_generator.py`.
+- Need to confirm `rank_bm25` is installed in the test environment without Docker running.
