@@ -20,7 +20,7 @@ This is a Tier 2 issue requiring cross-module understanding of the RAG pipeline.
 
 ## Week 8 — Reproduction & solution planning
 
-**Reproduction commit link:** https://github.com/1WillShine/pathreview/commit/$(git rev-parse HEAD~1)
+**Reproduction commit link:** https://github.com/1WillShine/pathreview/commit/e9eb5fb
 
 **Reproduction summary:**
 Confirmed that `tests/integration/` contains only `__init__.py` — `test_rag_pipeline.py` does not exist. The gap is real: all five RAG components (`HybridRetriever`, `VectorStore`, `KeywordSearcher`, `ReviewGenerator`, `parse_review_output`) have unit tests but no test wires them together end-to-end. A bug at any composition boundary (e.g. score format mismatch between retriever output and generator's context formatter) would go undetected.
